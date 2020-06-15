@@ -1,0 +1,32 @@
+{{ define "slack.devops.text" }}
+{{range .Alerts}}{{.Annotations.DESCRIPTION}}
+{{end}}
+{{ end }}
+
+{{ define "__alert_severity_prefix_title" -}}
+    {{ if ne .Status "firing" -}}
+    :
+    {{- else if eq .CommonLabels.severity "critical" -}}
+    :fire:
+    {{- else if eq .CommonLabels.severity "warning" -}}
+    :warning:
+    {{- else if eq .CommonLabels.severity "info" -}}
+    :information_source:
+    {{- else -}}
+    :question:
+    {{- end }}
+{{- end }}
+
+{{/* First line of Slack alerts */}}
+{{ define "slack.stms.title" -}}
+    [{{ .Status | toUpper -}}
+    {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
+    ] {{ template "__alert_severity_prefix_title" . }} {{ .CommonLabels.alertname }}
+{{- end }}
+
+{{/* The test to display in the alert */}}
+{{ define "slack.stms.text" -}}
+    {{ range .Alerts }}
+        {{- if .Annotations.description }}- {{ .Annotations.identifier }}: {{ .Annotations.description }} {{- end }}
+    {{- end }}
+{{- end }}

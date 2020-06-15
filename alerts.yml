@@ -1,0 +1,92 @@
+groups:
+  - name: Node Exp Down
+    rules:
+    - alert: Prometheus Target Missing
+      expr: up == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Instance {{ $labels.instance }} down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minutes."
+  
+  - name: free disk space
+    rules:
+    - alert: Free Disk Space (Less Than 15%)
+      expr: floor((1 - (wmi_logical_disk_free_bytes / wmi_logical_disk_size_bytes)) * 100) > 85
+      for: 30s
+      labels:
+        severity: critical
+      annotations:
+        title: Low free space on {{ $labels.instance }}
+        summary: "High Disk Space Usage (instance {{ $labels.instance }})"
+        description: "High Disk Space Usage:  {{ $labels.instance }} - {{ $labels.volume }} - {{ $value }}%"       
+  
+  - name: Services not running
+    rules:
+    - alert: Services not running
+      expr: wmi_service_state{state!="running"} == 1
+      for: 1s
+      labels:
+        severity: critical
+      annotations:
+        summary: "Service not runnning (instance {{ $labels.instance }})"
+        description: "Service not runnning: {{ $labels.instance }} - {{ $value }}"
+        
+  - name: memory usage
+    rules:
+    - alert: Low Memory (Less Than 15%)
+      expr: floor ((wmi_os_physical_memory_free_bytes / wmi_cs_physical_memory_bytes) * 100) < 15
+      for: 30s
+      labels:
+        severity: critical
+      annotations:
+        title: Low Memory on {{ $labels.instance }}
+        summary: "High Memory Usage (instance {{ $labels.instance }})"
+        description: "Only {{ $value }}% available on {{ $labels.instance }}"        
+ 
+  - name: cpu usage
+    rules:
+    - alert: High Cpu Usage (More Than 90%)
+      expr: floor(100 - (avg by (instance) (irate(wmi_cpu_time_total{mode="idle" }[5m])) * 100)) > 90
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        title: "High Cpu Usage {{ $labels.instance }}"
+        summary: "High Cpu Usage(instance {{ $labels.instance }})"
+        description: "High CPU Usage on {{ $labels.instance }} - {{ $value }}%"
+        
+  - name: DiskWillFillIn4Hours
+    rules:
+    - alert: Disk Will Fill In 4Hours
+      expr: predict_linear(wmi_logical_disk_free_bytes[1h], 4 * 3600) < 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Instance {{ $labels.instance }} {{ $labels.volume }} storage running out"
+        description: "{{ $labels.instance }} is predicated that the {{ $labels.volume }} will run out at the current rate in under 4 hours."
+
+  - name: NomadJobsNotRunning
+    rules:
+    - alert: Nomad Jobs Not Running
+      expr: nomad_nomad_job_summary_failed >0 or nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Job {{ $labels.task_group }} is not running"
+        description: "Job {{ $labels.task_group }} is not running"
+
+  - name: NomadJobsRestart
+    rules:
+    - alert: Nomad Jobs Is Restarting too many times
+      expr: sum_over_time (nomad_nomad_job_summary_starting[5m])  > 4
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Check Job {{ $labels.task_group }}"
+        description: "Check Job {{ $labels.task_group }} "
+
