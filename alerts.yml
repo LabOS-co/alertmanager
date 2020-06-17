@@ -82,7 +82,7 @@ groups:
   - name: NomadJobsRestart
     rules:
     - alert: Nomad Jobs Is Restarting too many times
-      expr: sum_over_time (nomad_nomad_job_summary_starting[5m])  > 4
+      expr: sum_over_time (nomad_nomad_job_summary_starting[10m])  > 4
       for: 5m
       labels:
         severity: critical
