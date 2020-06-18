@@ -27,6 +27,6 @@
 {{/* The test to display in the alert */}}
 {{ define "slack.stms.text" -}}
     {{ range .Alerts }}
-        {{- if .Annotations.description }}- {{ .Annotations.description }} {{- end }}
+        {{- if .Annotations.description }} *{{ .Annotations.description }} {{- end }}
     {{- end }}
 {{- end }}

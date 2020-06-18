@@ -88,5 +88,5 @@ groups:
         severity: critical
       annotations:
         summary: "{{ $labels.instance }}: Check Job {{ $labels.task_group }}"
-        description: "{{ $labels.instance }}: Check Job {{ $labels.task_group }} "
+        description: "{{ $labels.instance }}: Check Job *{{ $labels.task_group }}* \n"
 
