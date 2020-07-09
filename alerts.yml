@@ -77,7 +77,7 @@ groups:
         severity: critical
       annotations:
         summary: "Job {{ $labels.task_group }} is not running \n"
-        description: "Job {{ $labels.task_group }} is not running \n"
+        description: "Job *{{ $labels.task_group }}* is not running \n"
 
   - name: NomadJobsRestart
     rules:
