@@ -14,7 +14,7 @@ groups:
     rules:
     - alert: Free Disk Space (Less Than 15%)
       expr: floor((1 - (wmi_logical_disk_free_bytes / wmi_logical_disk_size_bytes)) * 100) > 85
-      for: 30s
+      for: 1m
       labels:
         severity: critical
       annotations:
@@ -37,7 +37,7 @@ groups:
     rules:
     - alert: Low Memory (Less Than 15%)
       expr: floor ((wmi_os_physical_memory_free_bytes / wmi_cs_physical_memory_bytes) * 100) < 15
-      for: 30s
+      for: 2m
       labels:
         severity: critical
       annotations:
