@@ -30,8 +30,8 @@ groups:
       labels:
         severity: critical
       annotations:
-        summary: "Service not runnning (instance {{ $labels.instance }})"
-        description: "Service not runnning: {{ $labels.instance }} - {{ $value }}"
+        summary: "Service not runnning (instance {{ $labels.instance }}) \n"
+        description: "Service not runnning: {{ $labels.instance }} - {{ $labels.name }} \n"
         
   - name: memory usage
     rules:
@@ -71,7 +71,7 @@ groups:
   - name: NomadJobsNotRunning
     rules:
     - alert: Nomad Jobs Not Running
-      expr: nomad_nomad_job_summary_failed >0 or nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"} == 0
+      expr: nomad_nomad_job_summary_failed >0 or avg_over_time(nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"}[5m]) < 1
       for: 5m
       labels:
         severity: critical
