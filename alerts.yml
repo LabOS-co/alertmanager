@@ -36,8 +36,8 @@ groups:
   - name: memory usage
     rules:
     - alert: Low Memory (Less Than 15%)
-      expr: floor ((wmi_os_physical_memory_free_bytes / wmi_cs_physical_memory_bytes) * 100) < 15
-      for: 2m
+      expr: (avg by (instance) (wmi_os_physical_memory_free_bytes / wmi_cs_physical_memory_bytes) * 100)  < 15
+      for: 10m
       labels:
         severity: critical
       annotations:
@@ -49,7 +49,7 @@ groups:
     rules:
     - alert: High Cpu Usage (More Than 90%)
       expr: floor(100 - (avg by (instance) (irate(wmi_cpu_time_total{mode="idle" }[5m])) * 100)) > 90
-      for: 1m
+      for: 3m
       labels:
         severity: critical
       annotations:
