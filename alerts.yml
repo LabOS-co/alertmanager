@@ -49,7 +49,7 @@ groups:
     rules:
     - alert: High Cpu Usage (More Than 90%)
       expr: floor(100 - (avg by (instance) (irate(wmi_cpu_time_total{mode="idle" }[5m])) * 100)) > 90
-      for: 3m
+      for: 10m
       labels:
         severity: critical
       annotations:
