@@ -72,7 +72,7 @@ groups:
     rules:
     - alert: Nomad Jobs Not Running
       expr: nomad_nomad_job_summary_failed >0 or avg_over_time(nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"}[5m]) < 1
-      for: 5m
+      for: 10m
       labels:
         severity: critical
       annotations:
