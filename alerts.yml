@@ -35,9 +35,9 @@ groups:
         
   - name: memory usage
     rules:
-    - alert: Low Memory (Less Than 15%)
-      expr: floor((avg by (instance) (wmi_os_physical_memory_free_bytes / wmi_cs_physical_memory_bytes) * 100)) < 15
-      for: 10m
+    - alert: Low Memory (Less Than 10%)
+      expr: floor((avg by (instance) (wmi_os_physical_memory_free_bytes / wmi_cs_physical_memory_bytes) * 100)) < 10
+      for: 15m
       labels:
         severity: critical
       annotations:
