@@ -82,7 +82,7 @@ groups:
   - name: NomadJobsRestart
     rules:
     - alert: Nomad Job Is Restarting too many times
-      expr: nomad_nomad_job_summary_starting > 0
+      expr: avg_over_time(nomad_nomad_job_summary_starting[10m]) > 0
       for: 10m
       labels:
         severity: critical
