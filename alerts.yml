@@ -71,7 +71,7 @@ groups:
   - name: NomadJobsNotRunning
     rules:
     - alert: Nomad Jobs Not Running
-      expr: nomad_nomad_job_summary_failed >0 or avg_over_time(nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"}[5m]) < 1
+      expr: avg_over_time(nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"}[5m]) < 1
       for: 10m
       labels:
         severity: critical
@@ -82,8 +82,8 @@ groups:
   - name: NomadJobsRestart
     rules:
     - alert: Nomad Job Is Restarting too many times
-      expr: avg_over_time(nomad_nomad_job_summary_starting[10m]) > 0
-      for: 10m
+      expr: nomad_nomad_job_summary_starting == 1
+      for: 5m
       labels:
         severity: critical
       annotations:
