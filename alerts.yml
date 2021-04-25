@@ -68,16 +68,16 @@ groups:
         summary: "Instance {{ $labels.instance }} {{ $labels.volume }} storage running out"
         description: "{{ $labels.instance }} is predicated that the {{ $labels.volume }} will run out at the current rate in under 4 hours."
 
-  - name: NomadJobsNotRunning
+  - name: FailedNomadJobs
     rules:
-    - alert: Nomad Jobs Not Running
-      expr: avg_over_time(nomad_nomad_job_summary_running{exported_job!~".*periodic.*|.*Cleanjobs.*|.*Autoarchive.*|.*Biller.*"}[5m]) < 1
+    - alert: Nomad Job Failed
+      expr: sum (nomad_nomad_job_summary_failed > 0) by (parent_id, task_group)
       for: 10m
       labels:
         severity: critical
       annotations:
-        summary: "Job {{ $labels.task_group }} is not running \n"
-        description: "Job *{{ $labels.task_group }}* is not running \n"
+        summary: "task {{ $labels.task_group }} has failed under job {{ $labels.parent_id }} \n"
+        description: "{{ $value }} allocation(s) in {{ $labels.parent_id }} failed! \n"
 
   - name: NomadJobsRestart
     rules:
